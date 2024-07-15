@@ -45,16 +45,22 @@ toc: false
 </style>
 
 <div class="hero">
-  <h1>Hello, Observable Framework</h1>
-  <h2>Observable Frameworkを使ったサンプルです</h2>
+  <h1>Notebook</h1>
+  <h2><a href="https://x.com/_shimizu" target="_blank">@_shimizu</a>の書き溜めです。</h2>
 </div>
 
 
+# このノートブックは何に？
+
+個人で作成したデータビジュアライゼーションコンテンツを置いています。
+
+<br />
+
 # Observable Frameworkとは？
 
-D3の制作者であるMike Bostock氏が作成した、データ アプリ、ダッシュボード、レポートなどを構築するたっめの静的サイト ジェネレーター。
+D3の制作者であるMike Bostock氏が作成した、データ アプリ、ダッシュボード、レポートなどを構築するたっめの静的サイト ジェネレーターです。
 
+[Observable Framework](https://observablehq.com/framework/)
 
-<a href="https://observablehq.com/">observablehq.com</a>の構文を用いてデータビジュアライゼーションを構築できるフレームワークです。
 
 ---
