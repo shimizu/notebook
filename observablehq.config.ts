@@ -1,8 +1,8 @@
 // See https://observablehq.com/framework/config for documentation.
 export default {
   // The project’s title; used in the sidebar and webpage titles.
-  title: "Observable Framework Demo",
-  theme:"light",
+  title: "Shimizu's Notebook",
+  theme:"dark",
 
   // The pages and sections in the sidebar. If you don’t specify this option,
   // all pages will be listed in alphabetical order. Listing pages explicitly
