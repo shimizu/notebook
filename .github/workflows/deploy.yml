@@ -1,5 +1,8 @@
 name: Deploy
 
+#github pageにdistディレクトリのファイルをデプロイします。
+#使用する際には、リポジトリのSettings->Pagesで「Build and deployment」の項目を「GitHub Actions」に変更してください
+
 on:
   workflow_dispatch: {}
   push:
