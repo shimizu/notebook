@@ -1,0 +1,38 @@
+{
+    "marker-trump": {
+        "x": 0,
+        "y": 0,
+        "width": 96,
+        "height": 96,
+        "anchorY": 96,
+        "anchorX": 48,
+        "mask": true
+    },
+    "marker-sniper": {
+        "x": 96,
+        "y": 0,
+        "width": 96,
+        "height": 96,
+        "anchorY": 96,
+        "anchorX": 48,
+        "mask": true
+    },
+    "marker-shooter": {
+        "x": 192,
+        "y": 0,
+        "width": 96,
+        "height": 96,
+        "anchorY": 96,
+        "anchorX": 48,
+        "mask": true
+    },
+    "marker": {
+        "x": 0,
+        "y": 0,
+        "width": 128,
+        "height": 128,
+        "anchorY": 128,
+        "anchorX": 96,
+        "mask": true
+    }    
+}

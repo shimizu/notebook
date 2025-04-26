@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>ドナルド・トランプ暗殺未遂事件 | Shimizu&#x27;s Notebook</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&amp;display=swap" crossorigin>
+<link rel="preload" as="style" href="./_observablehq/theme-near-midnight.css">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&amp;display=swap" crossorigin>
+<link rel="stylesheet" type="text/css" href="./_observablehq/theme-near-midnight.css">
+<link rel="modulepreload" href="./_observablehq/client.js">
+<link rel="modulepreload" href="./_observablehq/runtime.js">
+<link rel="modulepreload" href="./_observablehq/stdlib.js">
+<link rel="modulepreload" href="./_npm/deck.gl@9.0.20/dist.min.js._esm.js">
+<script type="module">
+
+import {define} from "./_observablehq/client.js";
+import {registerFile} from "./_observablehq/stdlib.js";
+
+registerFile("./data/trump_assassination_attempt/arrangement.geojson", {"name":"./data/trump_assassination_attempt/arrangement.geojson","mimeType":"application/geo+json","path":"./_file/data/trump_assassination_attempt/arrangement.93a20c71.geojson","lastModified":1721100628680});
+registerFile("./data/trump_assassination_attempt/icons.json", {"name":"./data/trump_assassination_attempt/icons.json","mimeType":"application/json","path":"./_file/data/trump_assassination_attempt/icons.d04d4bc7.json","lastModified":1721100634660});
+registerFile("./data/trump_assassination_attempt/icons.png", {"name":"./data/trump_assassination_attempt/icons.png","mimeType":"image/png","path":"./_file/data/trump_assassination_attempt/icons.de11e45a.png","lastModified":1721098755872});
+
+define({id: "a8828c58", outputs: ["initialViewState"], body: () => {
+const initialViewState = {
+    "latitude": 40.86026139074254,
+    "longitude": -79.9658194798167,
+    "zoom": 15.7,
+    "bearing": 53.37931034482759,
+    "pitch": 55.75190167047916,
+    "maxZoom": 16,
+    "minZoom": 0,
+};
+return {initialViewState};
+}});
+
+define({id: "06772948", inputs: ["DeckGL","initialViewState","invalidation","container"], outputs: ["deckInstance"], body: (DeckGL,initialViewState,invalidation,container) => {
+//deck.gl初期化
+const deckInstance = new DeckGL({
+  container:"container",
+  initialViewState,
+  controller: true,
+  onViewStateChange:v=>{ console.log(v.viewState) }
+});
+
+// clean up if this code re-runs
+invalidation.then(() => {
+  deckInstance.finalize();
+  container.innerHTML = "";
+});
+return {deckInstance};
+}});
+
+define({id: "a037ddcd", inputs: ["deckInstance","Tile3DLayer","SolidPolygonLayer","polygon","GeoJsonLayer","point","iconAtlas","iconMapping","TextLayer"], outputs: ["GOOGLEMAP_API_KEY"], body: (deckInstance,Tile3DLayer,SolidPolygonLayer,polygon,GeoJsonLayer,point,iconAtlas,iconMapping,TextLayer) => {
+//レイヤー表示
+const GOOGLEMAP_API_KEY = "AIzaSyA8X-e3Naz_Pu50cP8bdDQUZukKrXMqDGs"
+deckInstance.setProps({
+  layers: [
+    
+    new Tile3DLayer({
+        id: 'tile-3d-layer',
+        data: `https://tile.googleapis.com/v1/3dtiles/root.json?key=${GOOGLEMAP_API_KEY}`,
+        zoomOffset:15,
+        loadOptions: {
+            tileset: {
+                throttleRequests: false,
+            },
+            fetch: { headers: { 'X-GOOG-API-KEY': GOOGLEMAP_API_KEY } }
+        },
+        onTilesetLoad: tileset3d => {
+          tileset3d.options.onTraversalComplete = selectedTiles => {
+            const credits = new Set();
+            selectedTiles.forEach(tile => {
+              const { copyright } = tile.content.gltf.asset;
+              copyright.split(';').forEach(credits.add, credits);
+              document.querySelector("#copyright").innerHTML = [...credits].join('; ');
+            });
+            return selectedTiles;
+          }
+        },
+        _subLayerProps: {
+            scenegraph: { _lighting: 'pbr'}
+        },
+    }),
+    
+
+    new SolidPolygonLayer({
+        id: "land-layer",
+        data: polygon,
+        getPolygon: d => d.geometry.coordinates[0],
+        pickable: false,
+        extruded :true,
+        elevationScale :1,
+        getElevation :2,
+        wireframe: true,
+        getLineColor: [60, 60, 60],
+        getFillColor: d=>{
+          if(d.properties.name === "stage") return  [0, 0, 255, 200]
+          return [120, 120, 120, 120]
+        },
+    }),
+
+    new GeoJsonLayer({
+      id: 'GeoJsonLayer',
+      data: point,
+      pickable: true,
+      pointType: 'icon+circle',
+      getFillColor: d=>d.properties.color,
+      getLineColor:[255,255,255],
+      getPointRadius: 2,
+      pointRadiusMinPixels:0.5,
+
+      getIcon: d => d.properties.maker,
+      iconSizeScale:10,
+      getSize: 1,
+      iconAtlas: iconAtlas,
+      iconMapping: iconMapping,
+      getIconColor:d=>d.properties.color,
+
+    }),
+    new TextLayer({
+      id: 'text-Layer',
+      data: point,
+      getColor:d=>d.properties.color,
+      getPosition: d => d.geometry.label_cordinates,
+      getText: d => d.properties.name,
+      getSize: 12,
+    })
+
+  ]
+});
+return {GOOGLEMAP_API_KEY};
+}});
+
+define({id: "66ddaa50", inputs: ["arrangement"], outputs: ["polygon"], body: (arrangement) => {
+const polygon = arrangement
+  .features.filter(d=>d.properties.type === "polygon")
+  
+polygon.forEach(f => {
+    f.geometry.coordinates[0].forEach(p=>{
+      p.push(375)
+    })
+  })
+return {polygon};
+}});
+
+define({id: "ec9c9cf9", inputs: ["arrangement"], outputs: ["point"], body: (arrangement) => {
+const point = arrangement
+ .features.filter(d=>d.properties.type === "point")
+
+
+ point.forEach(f => {
+   f.geometry.coordinates.push(378)
+   f.geometry.label_cordinates =  JSON.parse(JSON.stringify(f.geometry.coordinates));
+   f.geometry.label_cordinates[2] = 400
+ })
+return {point};
+}});
+
+define({id: "20798e2f", outputs: ["deck"], body: async () => {
+const {default: deck} = await import("./_npm/deck.gl@9.0.20/dist.min.js._esm.js");
+
+return {deck};
+}});
+
+define({id: "71e7e089", inputs: ["deck"], outputs: ["DeckGL","Tile3DLayer","GeoJsonLayer","SolidPolygonLayer","TextLayer"], body: (deck) => {
+const {DeckGL, Tile3DLayer, GeoJsonLayer,SolidPolygonLayer,TextLayer } = deck;
+return {DeckGL,Tile3DLayer,GeoJsonLayer,SolidPolygonLayer,TextLayer};
+}});
+
+define({id: "532d198a", inputs: ["FileAttachment"], outputs: ["arrangement"], body: (FileAttachment) => {
+const arrangement = FileAttachment("./data/trump_assassination_attempt/arrangement.geojson").json();
+return {arrangement};
+}});
+
+define({id: "662bbec0", inputs: ["FileAttachment"], outputs: ["iconAtlas"], body: (FileAttachment) => {
+const iconAtlas = FileAttachment("./data/trump_assassination_attempt/icons.png").image();
+return {iconAtlas};
+}});
+
+define({id: "8fbb4c23", inputs: ["FileAttachment"], outputs: ["iconMapping"], body: (FileAttachment) => {
+const iconMapping = FileAttachment("./data/trump_assassination_attempt/icons.json").json();
+return {iconMapping};
+}});
+
+</script>
+<input id="observablehq-sidebar-toggle" type="checkbox" title="Toggle sidebar">
+<label id="observablehq-sidebar-backdrop" for="observablehq-sidebar-toggle"></label>
+<nav id="observablehq-sidebar">
+  <ol>
+    <label id="observablehq-sidebar-close" for="observablehq-sidebar-toggle"></label>
+    <li class="observablehq-link"><a href="./">Shimizu&#x27;s Notebook</a></li>
+  </ol>
+  <ol>
+    <li class="observablehq-link"><a href="./1.global_inflation_rate">世界のインフレ率マップ</a></li>
+    <li class="observablehq-link observablehq-link-active"><a href="./2.trump_assassination_attempt">ドナルド・トランプ暗殺未遂事件</a></li>
+    <li class="observablehq-link"><a href="./3.hourly_stock_index_CFD_change">24/8/2株価指数CFD騰落率</a></li>
+    <li class="observablehq-link"><a href="./4.cacao_cheker">カカオチェッカー</a></li>
+  </ol>
+</nav>
+<script>{Object.assign(document.createElement("a"),{href:""}).password&&location.replace(location.href);const e=document.querySelector("#observablehq-sidebar"),t=document.querySelector("#observablehq-sidebar-toggle"),r=sessionStorage.getItem("observablehq-sidebar");r?t.checked=r==="true":t.indeterminate=!0;for(const o of document.querySelectorAll("#observablehq-sidebar summary")){const s=o.parentElement;switch(sessionStorage.getItem(`observablehq-sidebar:${o.textContent}`)){case"true":s.open=!0;break;case"false":s.classList.contains("observablehq-section-active")||(s.open=!1);break}}addEventListener("beforeunload",()=>sessionStorage.setItem("observablehq-sidebar-scrolly",`${e.scrollTop}`));const a=sessionStorage.getItem("observablehq-sidebar-scrolly");a!=null&&(e.style.cssText="overflow: hidden;",e.scrollTop=+a,e.style.cssText="");}</script>
+<div id="observablehq-center">
+<main id="observablehq-main" class="observablehq">
+<h1 id="%E3%83%89%E3%83%8A%E3%83%AB%E3%83%89%E3%83%BB%E3%83%88%E3%83%A9%E3%83%B3%E3%83%97%E6%9A%97%E6%AE%BA%E6%9C%AA%E9%81%82%E4%BA%8B%E4%BB%B6" tabindex="-1"><a class="observablehq-header-anchor" href="#%E3%83%89%E3%83%8A%E3%83%AB%E3%83%89%E3%83%BB%E3%83%88%E3%83%A9%E3%83%B3%E3%83%97%E6%9A%97%E6%AE%BA%E6%9C%AA%E9%81%82%E4%BA%8B%E4%BB%B6">ドナルド・トランプ暗殺未遂事件</a></h1>
+<p>2024年7月13日、米国ペンシルベニア州バトラーの「Butler Farm Show」にて演説中のトランプ前大統領が銃撃された。</p>
+<p><a href="https://nypost.com/" target="_blank" rel="noopener noreferrer">NEW YORK POST</a>が掲載している画像を参考に、Google Photoreal 3D Tile上に位置を可視化してみた。</p>
+<h1 id="%E5%8F%82%E8%80%83%E7%94%BB%E5%83%8F" tabindex="-1"><a class="observablehq-header-anchor" href="#%E5%8F%82%E8%80%83%E7%94%BB%E5%83%8F">参考画像</a></h1>
+<p><img style="max-width:100%" src="./_file/data/trump_assassination_attempt/trump-grounds.b4b50875.webp"></p>
+<small>
+<p>souce: <a href="https://nypost.com/2024/07/13/us-news/sniper-shot-at-former-president-donald-trump-from-130-yards-away-on-roof-of-manufacturing-plant/" target="_blank" rel="noopener noreferrer">See it: Sniper shot former President Donald Trump from 130 yards away on roof of manufacturing plant</a></p>
+</small>
+<br>
+<h1 id="3d%E3%83%9E%E3%83%83%E3%83%97" tabindex="-1"><a class="observablehq-header-anchor" href="#3d%E3%83%9E%E3%83%83%E3%83%97">3Dマップ</a></h1>
+<figure style="max-width: none; position: relative;">
+  <div id="container" style="border-radius: 8px; overflow: hidden; background: rgb(18, 35, 48); height: 600px; margin: 1rem 0; "></div>
+  <small><div id="copyright"></div></small>
+</figure>
+<div class="observablehq observablehq--block"><!--:a8828c58:--></div>
+<div class="observablehq observablehq--block"><!--:06772948:--></div>
+<div class="observablehq observablehq--block"><!--:a037ddcd:--></div>
+<div class="observablehq observablehq--block"><!--:66ddaa50:--></div>
+<div class="observablehq observablehq--block"><!--:ec9c9cf9:--></div>
+<div class="observablehq observablehq--block"><!--:20798e2f:--></div>
+<div class="observablehq observablehq--block"><!--:71e7e089:--></div>
+<div class="observablehq observablehq--block"><!--:532d198a:--></div>
+<div class="observablehq observablehq--block"><!--:662bbec0:--></div>
+<div class="observablehq observablehq--block"><!--:8fbb4c23:--></div>
+</main>
+<footer id="observablehq-footer">
+<nav><a rel="prev" href="./1.global_inflation_rate"><span>世界のインフレ率マップ</span></a><a rel="next" href="./3.hourly_stock_index_CFD_change"><span>24/8/2株価指数CFD騰落率</span></a></nav>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2025-04-26T11:21:01">Apr 26, 2025</a>.</div>
+</footer>
+</div>

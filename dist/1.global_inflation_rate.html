@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>世界のインフレ率マップ | Shimizu&#x27;s Notebook</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&amp;display=swap" crossorigin>
+<link rel="preload" as="style" href="./_observablehq/theme-near-midnight.css">
+<link rel="preload" as="style" href="./_observablehq/stdlib/inputs.css">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&amp;display=swap" crossorigin>
+<link rel="stylesheet" type="text/css" href="./_observablehq/theme-near-midnight.css">
+<link rel="stylesheet" type="text/css" href="./_observablehq/stdlib/inputs.css">
+<link rel="modulepreload" href="./_observablehq/client.js">
+<link rel="modulepreload" href="./_observablehq/runtime.js">
+<link rel="modulepreload" href="./_observablehq/stdlib.js">
+<link rel="modulepreload" href="./_import/components/Legend.4d7e0368.js">
+<link rel="modulepreload" href="./_npm/deck.gl@9.0.20/dist.min.js._esm.js">
+<link rel="modulepreload" href="./_npm/d3@7.9.0/_esm.js">
+<link rel="modulepreload" href="./_observablehq/stdlib/inputs.js">
+<link rel="modulepreload" href="./_npm/@observablehq/plot@0.6.15/_esm.js">
+<link rel="modulepreload" href="./_npm/htl@0.3.1/_esm.js">
+<link rel="modulepreload" href="./_npm/isoformat@0.2.1/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-array@3.2.4/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-axis@3.0.0/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-brush@3.0.0/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-chord@3.0.1/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-color@3.1.0/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-contour@4.0.2/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-delaunay@6.0.4/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-dispatch@3.0.1/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-drag@3.0.0/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-dsv@3.0.1/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-ease@3.0.1/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-fetch@3.0.1/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-force@3.0.0/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-format@3.1.0/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-geo@3.1.1/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-hierarchy@3.1.2/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-interpolate@3.0.1/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-path@3.1.0/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-polygon@3.0.1/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-quadtree@3.0.1/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-random@3.0.1/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-scale@4.0.2/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-scale-chromatic@3.1.0/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-selection@3.0.0/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-shape@3.2.0/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-time@3.1.0/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-time-format@4.1.0/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-timer@3.0.1/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-transition@3.0.1/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-zoom@3.0.0/_esm.js">
+<link rel="modulepreload" href="./_npm/interval-tree-1d@1.0.4/_esm.js">
+<link rel="modulepreload" href="./_npm/internmap@2.0.3/_esm.js">
+<link rel="modulepreload" href="./_npm/delaunator@5.0.1/_esm.js">
+<link rel="modulepreload" href="./_npm/binary-search-bounds@2.0.5/_esm.js">
+<link rel="modulepreload" href="./_npm/robust-predicates@3.0.2/_esm.js">
+<script type="module">
+
+import {define} from "./_observablehq/client.js";
+import {registerFile} from "./_observablehq/stdlib.js";
+
+registerFile("./data/global_inflation_rate/inflation-s.json", {"name":"./data/global_inflation_rate/inflation-s.json","mimeType":"application/json","path":"./_file/data/global_inflation_rate/inflation-s.3293b84c.json","lastModified":1721042626391});
+
+define({id: "e1c4c82d", outputs: ["Legend"], body: async () => {
+const {Legend} = await import("./_import/components/Legend.4d7e0368.js");
+
+return {Legend};
+}});
+
+define({id: "099ba435", inputs: ["d3"], outputs: ["d3tmp"], body: (d3) => {
+//D3にカラーを10進数の配列で返すメソッドを追加
+let d3tmp =  d3.color.prototype.toRGB = function(){ return [this.r,  this.g, this.b] }
+return {d3tmp};
+}});
+
+define({id: "20798e2f", outputs: ["deck"], body: async () => {
+const {default: deck} = await import("./_npm/deck.gl@9.0.20/dist.min.js._esm.js");
+
+return {deck};
+}});
+
+define({id: "3804af31", inputs: ["deck"], outputs: ["DeckGL","GeoJsonLayer","TextLayer"], body: (deck) => {
+const {DeckGL, GeoJsonLayer, TextLayer} = deck;
+return {DeckGL,GeoJsonLayer,TextLayer};
+}});
+
+define({id: "c5fc240c", inputs: ["FileAttachment"], outputs: ["inflation_rate"], body: (FileAttachment) => {
+//インフレデータ(geojson)
+const inflation_rate = FileAttachment("./data/global_inflation_rate/inflation-s.json").json();
+return {inflation_rate};
+}});
+
+define({id: "1af23108", inputs: ["view","Inputs"], outputs: ["year"], body: (view,Inputs) => {
+const year = view(Inputs.range([1980, 2023], { step: 1, value:2023}));
+return {year};
+}});
+
+define({id: "1fde70d3", inputs: ["inflation_rate","year"], outputs: ["selectedYearData"], body: (inflation_rate,year) => {
+const selectedYearData = inflation_rate.features.map(d=>{
+  d.properties.selectedYear = year;
+  d.properties.value = d.properties["Y"+year];
+  return {type:"Feature", geometry:d.geometry, properties:d.properties}
+})
+
+return {selectedYearData};
+}});
+
+define({id: "d27c087f", inputs: ["d3"], outputs: ["colorScale"], body: (d3) => {
+//Fillカラースケール
+const colorScale = d3.scaleThreshold([
+    0,  3,  5,  10,  50, 100],
+    ["#1B5DAA","#F5A623","#F86285",  "#F50B40", "#C70833", "darkred", "#220000" ]  )
+return {colorScale};
+}});
+
+define({id: "6d655bb8", inputs: ["Legend","colorScale","display"], body: async (Legend,colorScale,display) => {
+display(await(
+Legend(colorScale, {
+  title: "インフレ率",
+  tickSize: 0
+})
+))
+}});
+
+define({id: "817b9585", outputs: ["initialViewState"], body: () => {
+const initialViewState = {
+  longitude: -2,
+  latitude: 53.5,
+  zoom: 1,
+  minZoom: 0,
+  maxZoom: 15,
+};
+return {initialViewState};
+}});
+
+define({id: "463e2d4d", inputs: ["DeckGL","initialViewState","getTooltip","invalidation","container"], outputs: ["deckInstance"], body: (DeckGL,initialViewState,getTooltip,invalidation,container) => {
+//deck.gl初期化
+const deckInstance = new DeckGL({
+  container:"container",
+  initialViewState,
+  controller: true,
+  getTooltip
+});
+
+// clean up if this code re-runs
+invalidation.then(() => {
+  deckInstance.finalize();
+  container.innerHTML = "";
+});
+return {deckInstance};
+}});
+
+define({id: "2e315493", inputs: ["deckInstance","GeoJsonLayer","selectedYearData","d3","colorScale","year","TextLayer"], body: (deckInstance,GeoJsonLayer,selectedYearData,d3,colorScale,year,TextLayer) => {
+//レイヤー表示
+deckInstance.setProps({
+  layers: [
+    new GeoJsonLayer({
+        id: "land-layer",
+        data: selectedYearData,
+        pickable: true,
+        lineWidthMinPixels: 1,
+        getLineColor: [60, 60, 60],
+        getFillColor: d=>{
+            const value =  d.properties.value;
+            if(!value) return [120,120,120];
+            return d3.color(colorScale(value)).toRGB()
+        },
+      updateTriggers:{
+        getFillColor:year
+      }        
+    }),
+    new TextLayer({
+        id: 'TextLayer',
+        data: selectedYearData,
+        pickable: true,
+        getPosition: d => [d.properties.lng,d.properties.lat],
+        getText: d => {
+            const value =  d.properties.value;
+            if(!value) return "";
+            return value.toString()
+        } ,
+        getAlignmentBaseline: 'center',
+        getColor: [255, 255, 255],
+        getSize: 12,
+        getTextAnchor: 'middle',
+        updateTriggers:{
+          getText:year
+        }            
+    })
+  ]
+});
+}});
+
+define({id: "96b76e5b", outputs: ["getTooltip"], body: () => {
+function getTooltip({object}) {
+  if (!object) return null;
+  const p = object.properties
+  return `${p.NAME_JA} ${p.selectedYear}年
+  インフレ率: ${p.value || "No Data."}
+  `;
+}
+return {getTooltip};
+}});
+
+define({id: "754ad954", inputs: ["inflation_rate"], outputs: ["countryNames"], body: (inflation_rate) => {
+const countryNames = inflation_rate.features
+  .filter(d => d.properties.Units)
+  .map(d => d.properties.NAME_JA).sort()
+return {countryNames};
+}});
+
+define({id: "819aac36", inputs: ["view","Inputs","countryNames"], outputs: ["selectCountry"], body: (view,Inputs,countryNames) => {
+const selectCountry =  view(Inputs.select(countryNames,{value:"日本"}))
+return {selectCountry};
+}});
+
+define({id: "3e7fba8e", inputs: ["inflation_rate","selectCountry"], outputs: ["linedata"], body: (inflation_rate,selectCountry) => {
+const linedata = function(){
+  const p = inflation_rate.features.filter(d => d.properties.NAME_JA == selectCountry)[0].properties
+  const yearIndex = Object.keys(p).filter(key => /^Y/.test(key));
+
+  const res = yearIndex.map(year=>{
+    return {
+      name:p.NAME_JA,
+      year:year.replace("Y",""),
+      value:p[year]
+    }
+
+  })
+
+  return res
+}();
+return {linedata};
+}});
+
+define({id: "f0255bb4", inputs: ["Plot","width","linedata","display"], body: async (Plot,width,linedata,display) => {
+display(await(
+Plot.plot({
+  width:width,
+  grid: true,
+  inset: 10,
+  y:{
+    label:"インフレ率(%)",
+  },
+  x:{
+    type: "band",
+    label:"Year",
+    ticks:["1980","1985", "1990","1995", "2000","2005", "2010","2015", "2020","2025", "2029"]
+  },
+  marks: [
+    Plot.lineY(linedata, {x: "year", y: 0, stroke:"darkred", strokeDasharray:"1 2"}),
+    Plot.lineY(linedata.filter(d=> +d.year < 2024), {x: "year", y: "value" }),
+    Plot.lineY(linedata.filter(d=> +d.year > 2022), {x: "year", y: "value", strokeDasharray:"3" }),
+    Plot.tip(linedata, Plot.pointerX({x: "year", y: "value"}))
+  ]
+})
+))
+}});
+
+</script>
+<input id="observablehq-sidebar-toggle" type="checkbox" title="Toggle sidebar">
+<label id="observablehq-sidebar-backdrop" for="observablehq-sidebar-toggle"></label>
+<nav id="observablehq-sidebar">
+  <ol>
+    <label id="observablehq-sidebar-close" for="observablehq-sidebar-toggle"></label>
+    <li class="observablehq-link"><a href="./">Shimizu&#x27;s Notebook</a></li>
+  </ol>
+  <ol>
+    <li class="observablehq-link observablehq-link-active"><a href="./1.global_inflation_rate">世界のインフレ率マップ</a></li>
+    <li class="observablehq-link"><a href="./2.trump_assassination_attempt">ドナルド・トランプ暗殺未遂事件</a></li>
+    <li class="observablehq-link"><a href="./3.hourly_stock_index_CFD_change">24/8/2株価指数CFD騰落率</a></li>
+    <li class="observablehq-link"><a href="./4.cacao_cheker">カカオチェッカー</a></li>
+  </ol>
+</nav>
+<script>{Object.assign(document.createElement("a"),{href:""}).password&&location.replace(location.href);const e=document.querySelector("#observablehq-sidebar"),t=document.querySelector("#observablehq-sidebar-toggle"),r=sessionStorage.getItem("observablehq-sidebar");r?t.checked=r==="true":t.indeterminate=!0;for(const o of document.querySelectorAll("#observablehq-sidebar summary")){const s=o.parentElement;switch(sessionStorage.getItem(`observablehq-sidebar:${o.textContent}`)){case"true":s.open=!0;break;case"false":s.classList.contains("observablehq-section-active")||(s.open=!1);break}}addEventListener("beforeunload",()=>sessionStorage.setItem("observablehq-sidebar-scrolly",`${e.scrollTop}`));const a=sessionStorage.getItem("observablehq-sidebar-scrolly");a!=null&&(e.style.cssText="overflow: hidden;",e.scrollTop=+a,e.style.cssText="");}</script>
+<div id="observablehq-center">
+<main id="observablehq-main" class="observablehq">
+<div class="observablehq observablehq--block"><!--:e1c4c82d:--></div>
+<style>
+#tooltip {
+  z-index:9;
+  pointer-events:none;
+  padding:2px 8px;
+  line-height:0em;
+  background-color:black;
+}
+
+</style>
+<div class="observablehq observablehq--block"><!--:099ba435:--></div>
+<div class="observablehq observablehq--block"><!--:20798e2f:--></div>
+<div class="observablehq observablehq--block"><!--:3804af31:--></div>
+<div class="observablehq observablehq--block"><!--:c5fc240c:--></div>
+<h1 id="%E4%B8%96%E7%95%8C%E3%81%AE%E3%82%A4%E3%83%B3%E3%83%95%E3%83%AC%E7%8E%87%E3%83%9E%E3%83%83%E3%83%97" tabindex="-1"><a class="observablehq-header-anchor" href="#%E4%B8%96%E7%95%8C%E3%81%AE%E3%82%A4%E3%83%B3%E3%83%95%E3%83%AC%E7%8E%87%E3%83%9E%E3%83%83%E3%83%97">世界のインフレ率マップ</a></h1>
+<div class="observablehq observablehq--block"><!--:1af23108:--></div>
+<div class="observablehq observablehq--block"><!--:1fde70d3:--></div>
+<div class="observablehq observablehq--block"><!--:d27c087f:--></div>
+<div class="observablehq observablehq--block"><observablehq-loading></observablehq-loading><!--:6d655bb8:--></div>
+<figure style="max-width: none; position: relative;">
+  <div id="container" style="border-radius: 8px; overflow: hidden; background: rgb(18, 35, 48); height: 600px; margin: 1rem 0; "></div>
+</figure>
+<div class="observablehq observablehq--block"><!--:817b9585:--></div>
+<div class="observablehq observablehq--block"><!--:463e2d4d:--></div>
+<div class="observablehq observablehq--block"><!--:2e315493:--></div>
+<div class="observablehq observablehq--block"><!--:96b76e5b:--></div>
+<br>
+<h1 id="%E5%9B%BD%E5%88%A5%E3%81%AE%E3%82%A4%E3%83%B3%E3%83%95%E3%83%AC%E7%8E%87%E6%8E%A8%E7%A7%BB" tabindex="-1"><a class="observablehq-header-anchor" href="#%E5%9B%BD%E5%88%A5%E3%81%AE%E3%82%A4%E3%83%B3%E3%83%95%E3%83%AC%E7%8E%87%E6%8E%A8%E7%A7%BB">国別のインフレ率推移</a></h1>
+<p>23年以降は予想値</p>
+<div class="observablehq observablehq--block"><!--:754ad954:--></div>
+<div class="observablehq observablehq--block"><!--:819aac36:--></div>
+<div class="observablehq observablehq--block"><!--:3e7fba8e:--></div>
+<div class="observablehq observablehq--block"><observablehq-loading></observablehq-loading><!--:f0255bb4:--></div>
+<br>
+<h1 id="%E3%83%87%E3%83%BC%E3%82%BF%E5%85%83" tabindex="-1"><a class="observablehq-header-anchor" href="#%E3%83%87%E3%83%BC%E3%82%BF%E5%85%83">データ元</a></h1>
+<p>国境データ</p>
+<p><a href="https://www.naturalearthdata.com/blog/admin-0-countries-point-of-views/" target="_blank" rel="noopener noreferrer">Japan POV - Natural Earth</a></p>
+<p>インフレ率データ</p>
+<p><a href="https://www.imf.org/en/Home" target="_blank" rel="noopener noreferrer">World Economic Outlook (WEO) database - IMF Data</a></p>
+</main>
+<footer id="observablehq-footer">
+<nav><a rel="prev" href="./"><span>Shimizu&#x27;s Notebook</span></a><a rel="next" href="./2.trump_assassination_attempt"><span>ドナルド・トランプ暗殺未遂事件</span></a></nav>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2025-04-26T11:21:01">Apr 26, 2025</a>.</div>
+</footer>
+</div>

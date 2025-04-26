@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>24/8/2株価指数CFD騰落率 | Shimizu&#x27;s Notebook</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&amp;display=swap" crossorigin>
+<link rel="preload" as="style" href="./_observablehq/theme-near-midnight.css">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&amp;display=swap" crossorigin>
+<link rel="stylesheet" type="text/css" href="./_observablehq/theme-near-midnight.css">
+<link rel="modulepreload" href="./_observablehq/client.js">
+<link rel="modulepreload" href="./_observablehq/runtime.js">
+<link rel="modulepreload" href="./_observablehq/stdlib.js">
+<link rel="modulepreload" href="./_npm/d3-dsv@3.0.1/_esm.js">
+<link rel="modulepreload" href="./_npm/d3@7.9.0/_esm.js">
+<link rel="modulepreload" href="./_npm/@observablehq/plot@0.6.15/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-array@3.2.4/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-axis@3.0.0/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-brush@3.0.0/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-chord@3.0.1/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-color@3.1.0/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-contour@4.0.2/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-delaunay@6.0.4/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-dispatch@3.0.1/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-drag@3.0.0/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-ease@3.0.1/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-fetch@3.0.1/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-force@3.0.0/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-format@3.1.0/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-geo@3.1.1/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-hierarchy@3.1.2/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-interpolate@3.0.1/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-path@3.1.0/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-polygon@3.0.1/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-quadtree@3.0.1/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-random@3.0.1/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-scale@4.0.2/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-scale-chromatic@3.1.0/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-selection@3.0.0/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-shape@3.2.0/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-time@3.1.0/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-time-format@4.1.0/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-timer@3.0.1/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-transition@3.0.1/_esm.js">
+<link rel="modulepreload" href="./_npm/d3-zoom@3.0.0/_esm.js">
+<link rel="modulepreload" href="./_npm/isoformat@0.2.1/_esm.js">
+<link rel="modulepreload" href="./_npm/interval-tree-1d@1.0.4/_esm.js">
+<link rel="modulepreload" href="./_npm/internmap@2.0.3/_esm.js">
+<link rel="modulepreload" href="./_npm/delaunator@5.0.1/_esm.js">
+<link rel="modulepreload" href="./_npm/binary-search-bounds@2.0.5/_esm.js">
+<link rel="modulepreload" href="./_npm/robust-predicates@3.0.2/_esm.js">
+<script type="module">
+
+import {define} from "./_observablehq/client.js";
+import {registerFile} from "./_observablehq/stdlib.js";
+
+registerFile("./data/hourly_stock_index_CFD_change/cfd_change_rate.csv", {"name":"./data/hourly_stock_index_CFD_change/cfd_change_rate.csv","mimeType":"text/csv","path":"./_file/data/hourly_stock_index_CFD_change/cfd_change_rate.1fcb42af.csv","lastModified":1723285802911});
+registerFile("./data/hourly_stock_index_CFD_change/jpn225.csv", {"name":"./data/hourly_stock_index_CFD_change/jpn225.csv","mimeType":"text/csv","path":"./_file/data/hourly_stock_index_CFD_change/jpn225.dc2474f5.csv","lastModified":1723292889409});
+
+define({id: "052130d1", inputs: ["FileAttachment"], outputs: ["cfd_change_rate"], body: (FileAttachment) => {
+//当落率データ(csv)
+const cfd_change_rate = FileAttachment("./data/hourly_stock_index_CFD_change/cfd_change_rate.csv").csv();
+return {cfd_change_rate};
+}});
+
+define({id: "5b008a99", inputs: ["cfd_change_rate"], outputs: ["jp","other"], body: (cfd_change_rate) => {
+const jp = cfd_change_rate.filter(d => d.key === "JPN225").map(d => {
+    return {"インデックス":d.key, "騰落率":d.value, "日時":new Date(d.date), }
+})
+
+const other = cfd_change_rate.filter(d => d.key !== "JPN225").map(d => {
+    return {"インデックス":d.key, "騰落率":d.value, "日時":new Date(d.date), }
+})
+return {jp,other};
+}});
+
+define({id: "eea6ec55", inputs: ["Plot","width","d3","jp","other","display"], body: async (Plot,width,d3,jp,other,display) => {
+display(await(
+Plot.plot({
+  width:width,
+  height:600,
+  marginLeft:60,
+  grid: true,
+  inset: 10,
+  y:{
+    label:"騰落率(%)",
+    tickFormat:d=>  d3.format(".2f")(d),
+    domain:[-2, 2]
+  },
+  x:{
+    label:"日時(GMT)"
+  },
+  color: {legend: true},
+  marks: [
+    Plot.ruleY([0]),
+    Plot.lineY(jp, {x: "日時", y: "騰落率", stroke:"インデックス", strokeWidth:2, tip: "x",}),
+    Plot.lineY(other, {x: "日時", y: "騰落率", stroke:"インデックス", strokeWidth:1, tip:"x",strokeOpacity: 0.35})
+
+    ]
+})
+))
+}});
+
+define({id: "c3842073", inputs: ["FileAttachment"], outputs: ["jpn225"], body: (FileAttachment) => {
+//当落率データ(csv)
+const jpn225 = FileAttachment("./data/hourly_stock_index_CFD_change/jpn225.csv").csv()
+return {jpn225};
+}});
+
+define({id: "7b2b0fd6", inputs: ["jpn225"], outputs: ["jpn225chartDarta"], body: (jpn225) => {
+const jpn225chartDarta = jpn225.map(d => {
+    const date  = new Date(d.date)
+    return { "騰落率":d.rate, "日時":date, }
+});
+return {jpn225chartDarta};
+}});
+
+define({id: "657cc3ed", inputs: ["Plot","width","d3","jpn225chartDarta","display"], body: async (Plot,width,d3,jpn225chartDarta,display) => {
+display(await(
+Plot.plot({
+  width:width,
+  height:600,
+  marginLeft:30,
+  grid: true,
+  inset: 10,
+  y:{
+    label:"騰落率(%)",
+    //tickFormat:d=>  d3.format(".2f")(d),
+    //domain:[30000, 40000]
+    domain:[-8, 8]
+  },
+  x:{
+    label:"日本時間",
+    tickFormat:d=> {
+      return d3.timeFormat("%-m/%-d %-I:%M")(d)
+    }
+  },
+  color: {legend: true},
+  marks: [
+    Plot.ruleY([0]),
+    Plot.lineY(jpn225chartDarta, {x: "日時", y: "騰落率", stroke:"red", strokeWidth:1, tip:"x"}),
+    Plot.tip(
+      [`8/5 14:00\n騰落率(%) -4.95`],
+      {x: new Date("2024-08-05T05:00:00Z"), y: -5, dy: 3, anchor: "top"}
+    ),    
+    Plot.tip(
+      [`8/5 16:00\n騰落率(%) 5.585`],
+      {x: new Date("2024-08-05T07:00:00Z"), y: 5.585, dy: -3, anchor: "bottom"}
+    ),    
+  ]
+})
+))
+}});
+
+</script>
+<input id="observablehq-sidebar-toggle" type="checkbox" title="Toggle sidebar">
+<label id="observablehq-sidebar-backdrop" for="observablehq-sidebar-toggle"></label>
+<nav id="observablehq-sidebar">
+  <ol>
+    <label id="observablehq-sidebar-close" for="observablehq-sidebar-toggle"></label>
+    <li class="observablehq-link"><a href="./">Shimizu&#x27;s Notebook</a></li>
+  </ol>
+  <ol>
+    <li class="observablehq-link"><a href="./1.global_inflation_rate">世界のインフレ率マップ</a></li>
+    <li class="observablehq-link"><a href="./2.trump_assassination_attempt">ドナルド・トランプ暗殺未遂事件</a></li>
+    <li class="observablehq-link observablehq-link-active"><a href="./3.hourly_stock_index_CFD_change">24/8/2株価指数CFD騰落率</a></li>
+    <li class="observablehq-link"><a href="./4.cacao_cheker">カカオチェッカー</a></li>
+  </ol>
+</nav>
+<script>{Object.assign(document.createElement("a"),{href:""}).password&&location.replace(location.href);const e=document.querySelector("#observablehq-sidebar"),t=document.querySelector("#observablehq-sidebar-toggle"),r=sessionStorage.getItem("observablehq-sidebar");r?t.checked=r==="true":t.indeterminate=!0;for(const o of document.querySelectorAll("#observablehq-sidebar summary")){const s=o.parentElement;switch(sessionStorage.getItem(`observablehq-sidebar:${o.textContent}`)){case"true":s.open=!0;break;case"false":s.classList.contains("observablehq-section-active")||(s.open=!1);break}}addEventListener("beforeunload",()=>sessionStorage.setItem("observablehq-sidebar-scrolly",`${e.scrollTop}`));const a=sessionStorage.getItem("observablehq-sidebar-scrolly");a!=null&&(e.style.cssText="overflow: hidden;",e.scrollTop=+a,e.style.cssText="");}</script>
+<div id="observablehq-center">
+<main id="observablehq-main" class="observablehq">
+<h1 id="2024%E5%B9%B48%E6%9C%881%E6%97%A5%EF%BD%9E2%E6%97%A5%E3%81%AE%E6%A0%AA%E4%BE%A1%E6%8C%87%E6%95%B0cfd%E9%A8%B0%E8%90%BD%E7%8E%87" tabindex="-1"><a class="observablehq-header-anchor" href="#2024%E5%B9%B48%E6%9C%881%E6%97%A5%EF%BD%9E2%E6%97%A5%E3%81%AE%E6%A0%AA%E4%BE%A1%E6%8C%87%E6%95%B0cfd%E9%A8%B0%E8%90%BD%E7%8E%87">2024年8月1日～2日の株価指数CFD騰落率</a></h1>
+<div class="observablehq observablehq--block"><!--:052130d1:--></div>
+<div class="observablehq observablehq--block"><!--:5b008a99:--></div>
+<div class="observablehq observablehq--block"><observablehq-loading></observablehq-loading><!--:eea6ec55:--></div>
+<h1 id="%E6%97%A5%E7%B5%8C225cfd(jpn225)%E3%81%AE%EF%BC%91%E6%99%82%E9%96%93%E6%AF%8E%E3%81%AE%E9%A8%B0%E8%90%BD%E7%8E%87" tabindex="-1"><a class="observablehq-header-anchor" href="#%E6%97%A5%E7%B5%8C225cfd(jpn225)%E3%81%AE%EF%BC%91%E6%99%82%E9%96%93%E6%AF%8E%E3%81%AE%E9%A8%B0%E8%90%BD%E7%8E%87">日経225CFD(JPN225)の１時間毎の騰落率</a></h1>
+<div class="observablehq observablehq--block"><!--:c3842073:--></div>
+<div class="observablehq observablehq--block"><!--:7b2b0fd6:--></div>
+<div class="observablehq observablehq--block"><observablehq-loading></observablehq-loading><!--:657cc3ed:--></div>
+</main>
+<footer id="observablehq-footer">
+<nav><a rel="prev" href="./2.trump_assassination_attempt"><span>ドナルド・トランプ暗殺未遂事件</span></a><a rel="next" href="./4.cacao_cheker"><span>カカオチェッカー</span></a></nav>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2025-04-26T11:21:01">Apr 26, 2025</a>.</div>
+</footer>
+</div>
